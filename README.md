@@ -55,3 +55,18 @@ Custom property | Description | Default
 `--paper-input-container-input-color` | Color of the input control | `--anypoint-color-steel5`
 `--paper-input-container-input` | Mixin applied to the input control | ``
 
+# paper-input-error
+
+The `<paper-input-error>` is a container for an error message or list of validation
+rules if the input element uses `validator`s.
+
+### Styling
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--paper-input-error-container` | Mixin applied to the element | `{}`
+`--paper-input-error-border-color` | Border color of the popover | `--anypoint-color-aluminum3`
+`--paper-input-error-left-border` | Color of the right border of the popover | `--anypoint-color-steel4`
+`--anypoint-text-container-invalid-color` | Color of error messages and borders when corresponding form control is invalid | `--anypoint-color-danger`
+`--paper-input-error-message-size` | Font size of the validation message. | `12px`
+
