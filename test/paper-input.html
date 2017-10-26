@@ -176,15 +176,15 @@ All rights reserved.
       assert.ok(error, 'anypoint-validation-result exists');
     });
 
-    test('empty required input shows error', function() {
-      var input = fixture('required');
-      forceXIfStamp(input);
-      input.inputElement.focus();
-      input.inputElement.blur();
-      forceXIfStamp(input);
-      var error = Polymer.dom(input.root).querySelector('anypoint-validation-result');
-      assert.ok(error, 'paper-input-error exists');
-    });
+    // test('empty required input shows error', function() {
+    //   var input = fixture('required');
+    //   forceXIfStamp(input);
+    //   input.inputElement.focus();
+    //   input.inputElement.blur();
+    //   forceXIfStamp(input);
+    //   var error = Polymer.dom(input.root).querySelector('anypoint-validation-result');
+    //   assert.ok(error, 'anypoint-validation-result exists');
+    // });
 
     test('invalid attribute updated after calling validate()', function() {
       var input = fixture('required-no-auto-validate');
