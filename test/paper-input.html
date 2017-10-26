@@ -172,8 +172,8 @@ All rights reserved.
     test('error message is displayed', function() {
       var input = fixture('error');
       forceXIfStamp(input);
-      var error = Polymer.dom(input.root).querySelector('anypoint-validation-result');
-      assert.ok(error, 'anypoint-validation-result exists');
+      var error = Polymer.dom(input.root).querySelector('paper-input-error');
+      assert.ok(error, 'paper-input-error exists');
     });
 
     // test('empty required input shows error', function() {
@@ -182,8 +182,8 @@ All rights reserved.
     //   input.inputElement.focus();
     //   input.inputElement.blur();
     //   forceXIfStamp(input);
-    //   var error = Polymer.dom(input.root).querySelector('anypoint-validation-result');
-    //   assert.ok(error, 'anypoint-validation-result exists');
+    //   var error = Polymer.dom(input.root).querySelector('paper-input-error');
+    //   assert.ok(error, 'paper-input-error exists');
     // });
 
     test('invalid attribute updated after calling validate()', function() {
@@ -191,8 +191,8 @@ All rights reserved.
       forceXIfStamp(input);
       input.validate();
       forceXIfStamp(input);
-      var error = Polymer.dom(input.root).querySelector('anypoint-validation-result');
-      assert.ok(error, 'anypoint-validation-result exists');
+      var error = Polymer.dom(input.root).querySelector('paper-input-error');
+      assert.ok(error, 'paper-input-error exists');
       assert.isTrue(input.invalid, 'invalid is true');
     });
 
@@ -281,7 +281,7 @@ All rights reserved.
       forceXIfStamp(input);
       assert.isTrue(input.inputElement.hasAttribute('aria-describedby'));
       assert.equal(input.inputElement.getAttribute('aria-describedby'),
-        Polymer.dom(input.root).querySelector('anypoint-validation-result').id,
+        Polymer.dom(input.root).querySelector('paper-input-error').id,
         'aria-describedby points to the error message');
     });
     test('focus an input with tabindex', function(done) {

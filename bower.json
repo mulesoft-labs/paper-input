@@ -15,7 +15,8 @@
     "paper-input.html",
     "paper-textarea.html",
     "paper-input-behavior.html",
-    "paper-input-container.html"
+    "paper-input-container.html",
+    "paper-input-error.html"
   ],
   "repository": {
     "type": "git",
