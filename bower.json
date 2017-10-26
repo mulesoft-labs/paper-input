@@ -12,7 +12,10 @@
   ],
   "private": true,
   "main": [
-    "paper-input.html"
+    "paper-input.html",
+    "paper-textarea.html",
+    "paper-input-behavior.html",
+    "paper-input-container.html"
   ],
   "repository": {
     "type": "git",
