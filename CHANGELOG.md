@@ -1,3 +1,9 @@
+<a name="1.9.3"></a>
+## [1.9.3](https://github.com/mulesoft/paper-input/compare/1.9.2...1.9.3) (2017-10-31)
+
+
+
+
 <a name="1.9.2"></a>
 ## [1.9.2](https://github.com/mulesoft/paper-input/compare/1.9.1...1.9.2) (2017-10-26)
 
