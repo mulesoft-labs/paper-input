@@ -5,7 +5,9 @@ Copyright 2017 Mulesoft.
 All rights reserved.
 -->
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-a11y-announcer/iron-a11y-announcer.html">
 <link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
+<link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
 <link rel="import" href="paper-input-container.html">
 <link rel="import" href="paper-input-behavior.html">
 <link rel="import" href="paper-input-error.html">
@@ -54,7 +56,7 @@ See `paper-input-container` for styling options.
     }
     </style>
     <paper-input-container no-label-float auto-validate$="[[autoValidate]]" disabled$="[[disabled]]" invalid="[[invalid]]">
-      <textarea id="textarea" disabled$="[[disabled]]" title$="[[title]]" bind-value="{{value}}" invalid="{{invalid}}" required$="[[required]]" autocomplete$="[[autocomplete]]" autofocus$="[[autofocus]]" inputmode$="[[inputmode]]" minlength$="[[minlength]]" maxlength$="[[maxlength]]" name$="[[name]]" placeholder$="[[placeholder]]" readonly$="[[readonly]]" autocapitalize$="[[autocapitalize]]" on-change="_onChange" rows$="[[rows]]"></textarea>
+      <textarea id="textarea" value="{{value::input}}" disabled$="[[disabled]]" title$="[[title]]" required$="[[required]]" autocomplete$="[[autocomplete]]" autofocus$="[[autofocus]]" inputmode$="[[inputmode]]" minlength$="[[minlength]]" maxlength$="[[maxlength]]" name$="[[name]]" placeholder$="[[placeholder]]" readonly$="[[readonly]]" autocapitalize$="[[autocapitalize]]" rows$="[[rows]]"></textarea>
       <template is="dom-if" if="[[hasValidationMessage]]">
         <paper-input-error aria-live="assertive" error-message="[[errorMessage]]" invalid="[[invalid]]" focused="[[focused]]" horizontal-align="right"></paper-input-error>
       </template>
@@ -62,10 +64,11 @@ See `paper-input-container` for styling options.
   </template>
   <script>
   Polymer({
-    is: 'anypoint-text-textarea',
+    is: 'paper-textarea',
     behaviors: [
       Polymer.IronFormElementBehavior,
-      Polymer.PaperInputBehavior
+      Polymer.PaperInputBehavior,
+      Polymer.IronValidatableBehavior
     ],
 
     properties: {
@@ -87,7 +90,22 @@ See `paper-input-container` for styling options.
       rows: {
         type: Number,
         value: 3
+      },
+
+      _patternAlreadyChecked: {
+        type: Boolean,
+        value: false
+      },
+
+      value: {
+        type: String,
+        notifyL: true
       }
+    },
+
+    listeners: {
+      'input': '_onInput',
+      'keypress': '_onKeypress'
     },
 
     _ariaLabelledByChanged: function(ariaLabelledBy) {
@@ -98,8 +116,118 @@ See `paper-input-container` for styling options.
       this.$.textarea.setAttribute('aria-describedby', ariaDescribedBy);
     },
 
-    get _focusableElement() {
+    /**
+     * Returns a reference to the input element.
+     */
+    get inputElement() {
       return this.$.textarea;
+    },
+
+    /**
+     * Returns a reference to the focusable element.
+     */
+    get _focusableElement() {
+      return this.inputElement;
+    },
+
+    get _patternRegExp() {
+      var pattern;
+      if (this.allowedPattern) {
+        pattern = new RegExp(this.allowedPattern);
+      } else {
+        switch (this.type) {
+          case 'number':
+            pattern = /[0-9.,e-]/;
+            break;
+        }
+      }
+      return pattern;
+    },
+
+    _onInput: function() {
+      // Need to validate each of the characters pasted if they haven't
+      // been validated inside `_onKeypress` already.
+      if (this.preventInvalidInput && !this._patternAlreadyChecked) {
+        var valid = this._checkPatternValidity();
+        if (!valid) {
+          this._announceInvalidCharacter('Invalid string of characters not entered.');
+          this.value = this._previousValidInput;
+        }
+      }
+      this._previousValidInput = this.value;
+      this._patternAlreadyChecked = false;
+    },
+
+    _checkPatternValidity: function() {
+      var regexp = this._patternRegExp;
+      if (!regexp) {
+        return true;
+      }
+      for (var i = 0; i < this.value.length; i++) {
+        if (!regexp.test(this.value[i])) {
+          return false;
+        }
+      }
+      return true;
+    },
+
+    _announceInvalidCharacter: function(message) {
+      this.fire('iron-announce', { text: message });
+    },
+
+    _onKeypress: function(event) {
+      if (!this.preventInvalidInput && this.type !== 'number') {
+        return;
+      }
+      var regexp = this._patternRegExp;
+      if (!regexp) {
+        return;
+      }
+
+      // Handle special keys and backspace
+      if (event.metaKey || event.ctrlKey || event.altKey)
+        return;
+
+      // Check the pattern either here or in `_onInput`, but not in both.
+      this._patternAlreadyChecked = true;
+
+      var thisChar = String.fromCharCode(event.charCode);
+      if (this._isPrintable(event) && !regexp.test(thisChar)) {
+        event.preventDefault();
+        this._announceInvalidCharacter('Invalid character ' + thisChar + ' not entered.');
+      }
+    },
+
+    _isPrintable: function(event) {
+      // What a control/printable character is varies wildly based on the browser.
+      // - most control characters (arrows, backspace) do not send a `keypress` event
+      //   in Chrome, but the *do* on Firefox
+      // - in Firefox, when they do send a `keypress` event, control chars have
+      //   a charCode = 0, keyCode = xx (for ex. 40 for down arrow)
+      // - printable characters always send a keypress event.
+      // - in Firefox, printable chars always have a keyCode = 0. In Chrome, the keyCode
+      //   always matches the charCode.
+      // None of this makes any sense.
+
+      // For these keys, ASCII code == browser keycode.
+      var anyNonPrintable =
+        (event.keyCode == 8)   ||  // backspace
+        (event.keyCode == 9)   ||  // tab
+        (event.keyCode == 13)  ||  // enter
+        (event.keyCode == 27);     // escape
+
+      // For these keys, make sure it's a browser keycode and not an ASCII code.
+      var mozNonPrintable =
+        (event.keyCode == 19)  ||  // pause
+        (event.keyCode == 20)  ||  // caps lock
+        (event.keyCode == 45)  ||  // insert
+        (event.keyCode == 46)  ||  // delete
+        (event.keyCode == 144) ||  // num lock
+        (event.keyCode == 145) ||  // scroll lock
+        (event.keyCode > 32 && event.keyCode < 41)   || // page up/down, end, home, arrows
+        (event.keyCode > 111 && event.keyCode < 124); // fn keys
+
+      return !anyNonPrintable && !(event.charCode == 0 && mozNonPrintable);
     }
   });
   </script>
