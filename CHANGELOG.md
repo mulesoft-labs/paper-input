@@ -1,3 +1,13 @@
+<a name="1.9.4"></a>
+## [1.9.4](https://github.com/mulesoft/paper-input/compare/1.9.3...1.9.4) (2018-01-29)
+
+
+### Update
+
+* Updated css selector to match anypoint input replacement. ([7597d078e34da9588e8e7630ac56222e6dcbd2a7](https://github.com/mulesoft/paper-input/commit/7597d078e34da9588e8e7630ac56222e6dcbd2a7))
+
+
+
 <a name="1.9.3"></a>
 ## [1.9.3](https://github.com/mulesoft/paper-input/compare/1.9.2...1.9.3) (2017-10-31)
 

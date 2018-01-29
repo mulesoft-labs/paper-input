@@ -1,7 +1,7 @@
 {
   "name": "paper-input",
   "description": "Anypoint version of the paper-input. This repository meant to be private",
-  "version": "1.9.3",
+  "version": "1.9.4",
   "license": "Apache-2.0 OR CC-BY-4.0",
   "authors": [
     "The Advanced REST client authors <arc@mulesoft.com>"

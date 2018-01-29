@@ -26,6 +26,19 @@ See `anypoint-text-container` for styling options.
 | Name | Description | Params |
 | --- | --- | --- |
 | change | Fired when the input changes due to user interaction. | __none__ |
+# paper-textarea
+
+`<paper-textarea>` is a multi line text input styled for the Anypoint platform
+as a Polymer powered web component
+
+### Example
+```
+<paper-textarea></paper-textarea>
+```
+
+### Styling
+See `paper-input-container` for styling options.
+
 # paper-input-container
 
 
