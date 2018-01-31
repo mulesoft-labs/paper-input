@@ -55,8 +55,29 @@ See `paper-input-container` for styling options.
       transform: translate(2px);
     }
     </style>
-    <paper-input-container no-label-float auto-validate$="[[autoValidate]]" disabled$="[[disabled]]" invalid="[[invalid]]">
-      <textarea id="textarea" value="{{value::input}}" disabled$="[[disabled]]" title$="[[title]]" required$="[[required]]" autocomplete$="[[autocomplete]]" autofocus$="[[autofocus]]" inputmode$="[[inputmode]]" minlength$="[[minlength]]" maxlength$="[[maxlength]]" name$="[[name]]" placeholder$="[[placeholder]]" readonly$="[[readonly]]" autocapitalize$="[[autocapitalize]]" rows$="[[rows]]"></textarea>
+    <paper-input-container
+      no-label-float="[[noLabelFloat]]"
+      auto-validate$="[[autoValidate]]"
+      disabled$="[[disabled]]"
+      invalid="[[invalid]]"
+      always-float-label="[[_computeAlwaysFloatLabel(alwaysFloatLabel,placeholder)]]">
+      <label hidden$="[[!label]]" aria-hidden="true" for$="[[_inputId]]">[[label]]</label>
+      <textarea
+        id$="[[_inputId]]"
+        value="{{value::input}}"
+        disabled$="[[disabled]]"
+        title$="[[title]]"
+        required$="[[required]]"
+        autocomplete$="[[autocomplete]]"
+        autofocus$="[[autofocus]]"
+        inputmode$="[[inputmode]]"
+        minlength$="[[minlength]]"
+        maxlength$="[[maxlength]]"
+        name$="[[name]]"
+        placeholder$="[[placeholder]]"
+        readonly$="[[readonly]]"
+        autocapitalize$="[[autocapitalize]]"
+        rows$="[[rows]]"></textarea>
       <template is="dom-if" if="[[hasValidationMessage]]">
         <paper-input-error aria-live="assertive" error-message="[[errorMessage]]" invalid="[[invalid]]" focused="[[focused]]" horizontal-align="right"></paper-input-error>
       </template>
@@ -109,23 +130,13 @@ See `paper-input-container` for styling options.
     },
 
     _ariaLabelledByChanged: function(ariaLabelledBy) {
-      this.$.textarea.setAttribute('aria-labelledby', ariaLabelledBy);
+      this.inputElement.setAttribute('aria-labelledby', ariaLabelledBy);
     },
 
     _ariaDescribedByChanged: function(ariaDescribedBy) {
-      this.$.textarea.setAttribute('aria-describedby', ariaDescribedBy);
+      this.inputElement.setAttribute('aria-describedby', ariaDescribedBy);
     },
 
-    /**
-     * Returns a reference to the input element.
-     */
-    get inputElement() {
-      return this.$.textarea;
-    },
-
-    /**
-     * Returns a reference to the focusable element.
-     */
     get _focusableElement() {
       return this.inputElement;
     },
@@ -172,7 +183,7 @@ See `paper-input-container` for styling options.
     },
 
     _announceInvalidCharacter: function(message) {
-      this.fire('iron-announce', { text: message });
+      this.fire('iron-announce', {text: message});
     },
 
     _onKeypress: function(event) {
@@ -185,8 +196,9 @@ See `paper-input-container` for styling options.
       }
 
       // Handle special keys and backspace
-      if (event.metaKey || event.ctrlKey || event.altKey)
+      if (event.metaKey || event.ctrlKey || event.altKey) {
         return;
+      }
 
       // Check the pattern either here or in `_onInput`, but not in both.
       this._patternAlreadyChecked = true;
@@ -211,23 +223,23 @@ See `paper-input-container` for styling options.
 
       // For these keys, ASCII code == browser keycode.
       var anyNonPrintable =
-        (event.keyCode == 8)   ||  // backspace
-        (event.keyCode == 9)   ||  // tab
-        (event.keyCode == 13)  ||  // enter
-        (event.keyCode == 27);     // escape
+        (event.keyCode === 8)   ||  // backspace
+        (event.keyCode === 9)   ||  // tab
+        (event.keyCode === 13)  ||  // enter
+        (event.keyCode === 27);     // escape
 
       // For these keys, make sure it's a browser keycode and not an ASCII code.
       var mozNonPrintable =
-        (event.keyCode == 19)  ||  // pause
-        (event.keyCode == 20)  ||  // caps lock
-        (event.keyCode == 45)  ||  // insert
-        (event.keyCode == 46)  ||  // delete
-        (event.keyCode == 144) ||  // num lock
-        (event.keyCode == 145) ||  // scroll lock
+        (event.keyCode === 19)  ||  // pause
+        (event.keyCode === 20)  ||  // caps lock
+        (event.keyCode === 45)  ||  // insert
+        (event.keyCode === 46)  ||  // delete
+        (event.keyCode === 144) ||  // num lock
+        (event.keyCode === 145) ||  // scroll lock
         (event.keyCode > 32 && event.keyCode < 41)   || // page up/down, end, home, arrows
         (event.keyCode > 111 && event.keyCode < 124); // fn keys
 
-      return !anyNonPrintable && !(event.charCode == 0 && mozNonPrintable);
+      return !anyNonPrintable && !(event.charCode === 0 && mozNonPrintable);
     }
   });
   </script>

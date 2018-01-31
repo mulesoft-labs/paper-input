@@ -64,11 +64,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </test-fixture>
 
   <script>
+    /* global fixture, assert, MockInteractions */
     suite('basic', function() {
       test('setting value sets the input value', function() {
         var input = fixture('basic');
         input.value = 'foobar';
-        var element = input.$$('#textarea');
+        var element = input.$$('textarea');
         assert.equal(element.value, input.value, 'element value equals input.value');
       });
       // test('empty required input shows error', function() {
@@ -119,7 +120,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       //   var container = Polymer.dom(input.root).querySelector('paper-input-container');
       //   var inputContent = Polymer.dom(container.root).querySelector('.input-content');
       //   var ironTextarea = Polymer.dom(input.root).querySelector('iron-autogrow-textarea');
-      //   assert.equal(inputContent.clientHeight,ironTextarea.clientHeight, 'container and textarea are same height');
+      //   assert.equal(inputContent.clientHeight,ironTextarea.clientHeight,
+      //    'container and textarea are same height');
       // });
     });
     suite('focus/blur events', function() {
@@ -133,27 +135,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // its underlying native textarea, which will also fire a `blur`
       // event.
       test('focus events fired on host element', function() {
-        input.addEventListener('focus', function(event) {
+        input.addEventListener('focus', function() {
           assert(input.focused, 'input is focused');
         });
         MockInteractions.focus(input);
       });
       test('focus events fired on host element if nested element is focused', function() {
-        input.addEventListener('focus', function(event) {
+        input.addEventListener('focus', function() {
           assert(input.focused, 'input is focused');
         });
         MockInteractions.focus(input.inputElement);
       });
       test('blur events fired on host element', function() {
         MockInteractions.focus(input);
-        input.addEventListener('blur', function(event) {
+        input.addEventListener('blur', function() {
           assert(!input.focused, 'input is blurred');
         });
         MockInteractions.blur(input);
       });
       test('blur events fired on host element nested element is blurred', function() {
         MockInteractions.focus(input);
-        input.addEventListener('blur', function(event) {
+        input.addEventListener('blur', function() {
           assert(!input.focused, 'input is blurred');
         });
         MockInteractions.blur(input.inputElement);
