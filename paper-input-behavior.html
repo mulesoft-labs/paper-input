@@ -12,6 +12,7 @@ All rights reserved.
   Polymer.PaperInputHelper = {};
   Polymer.PaperInputHelper.NextLabelID = 1;
   Polymer.PaperInputHelper.NextAddonID = 1;
+  Polymer.PaperInputHelper.NextInputID = 1;
 
   /**
    * Use `Polymer.PaperInputBehavior` to implement inputs with `<paper-input-container>`. This
@@ -378,8 +379,12 @@ All rights reserved.
       _ariaLabelledBy: {
         type: String,
         value: ''
-      }
+      },
 
+      _inputId: {
+        type: String,
+        value: ''
+      }
     },
 
     listeners: {
@@ -398,6 +403,13 @@ All rights reserved.
      * Returns a reference to the input element.
      */
     get inputElement() {
+      if (!this.$) {
+        this.$ = {};
+      }
+      if (!this.$.input) {
+        this._generateInputId();
+        this.$.input = this.$$('#' + this._inputId);
+      }
       return this.$.input;
     },
 
@@ -594,7 +606,13 @@ All rights reserved.
     _computeValidityStatus: function(invalid, errorMessage) {
       var has = invalid && !!errorMessage;
       this.hasValidationMessage = has;
-    }
+    },
+
+    _generateInputId: function() {
+      if (!this._inputId || this._inputId === '') {
+        this._inputId =  'input-' + Polymer.PaperInputHelper.NextInputID++;
+      }
+    },
   };
 
   /** @polymerBehavior */
