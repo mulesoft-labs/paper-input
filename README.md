@@ -65,8 +65,11 @@ Custom property | Description | Default
 `--paper-input-container-focus-color` | Color applied to the label and input when focused | `--anypoint-color-aluminum5`
 `--paper-input-field-prefix` | Mixin applied to any prefix element added to the container | `{}`
 `--paper-input-field-suffix` | Mixin applied to any suffix element added to the container | `{}`
-`--paper-input-container-input-color` | Color of the input control | `--anypoint-color-steel5`
 `--paper-input-container-input` | Mixin applied to the input control | ``
+`--paper-input-container-input-color` | Color of the input control | `--anypoint-color-steel5`
+`--paper-input-container-input-focus-color` | Color of the input control when focused | `--anypoint-color-steel5`
+`--paper-input-container-input-background-colol` | Background color of the input element | `#fff`
+`--paper-input-container-input-focus-background-color` | Background color of the input element when focused | `#fff`
 
 # paper-input-error
 

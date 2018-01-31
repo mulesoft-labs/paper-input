@@ -1,3 +1,13 @@
+<a name="1.9.6"></a>
+## [1.9.6](https://github.com/mulesoft/paper-input/compare/1.9.5...1.9.6) (2018-01-31)
+
+
+### Fix
+
+* Fixed issues with generating input ID ([83b923e1adde00a0c6650f230986845182be953a](https://github.com/mulesoft/paper-input/commit/83b923e1adde00a0c6650f230986845182be953a))
+
+
+
 <a name="1.9.5"></a>
 ## [1.9.5](https://github.com/mulesoft/paper-input/compare/1.9.4...1.9.5) (2018-01-29)
 

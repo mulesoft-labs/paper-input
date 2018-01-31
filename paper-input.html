@@ -109,9 +109,10 @@ See `anypoint-text-container` for styling options.
 
       <content select="[prefix]"></content>
 
-      <label hidden$="[[!label]]" aria-hidden="true" for="input">[[label]]</label>
+      <label hidden$="[[!label]]" aria-hidden="true" for$="[[_inputId]]">[[label]]</label>
 
-      <input is="iron-input" id="input"
+      <input is="iron-input"
+        id$="[[_inputId]]"
         aria-labelledby$="[[_ariaLabelledBy]]"
         aria-describedby$="[[_ariaDescribedBy]]"
         disabled$="[[disabled]]"
