@@ -3,25 +3,23 @@
 Copyright 2017 Mulesoft.
 All rights reserved.
 -->
-
-<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../polymer/polymer-element.html">
 <link rel="import" href="../../iron-validator-behavior/iron-validator-behavior.html">
-
 <script>
-  Polymer({
-    is: 'number-required',
-    behaviors: [
-      Polymer.IronValidatorBehavior
-    ],
-    properties: {
+class NumberRequired extends Polymer.IronValidatorMixin(Polymer.Element) {
+  static get is() { return 'number-required'; }
+  static get properties() {
+    return {
       // Error message to display
       message: {
         type: String,
         value: 'Must have number'
       }
-    },
-    validate: function(value) {
-      return /\d/.test(value);
-    }
-  });
+    };
+  }
+  validate(value) {
+    return /\d/.test(value);
+  }
+}
+window.customElements.define(NumberRequired.is, NumberRequired);
 </script>

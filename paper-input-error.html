@@ -4,46 +4,28 @@ Copyright 2017 Mulesoft.
 
 All rights reserved.
 -->
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-overlay-behavior/iron-overlay-behavior.html">
-<link rel="import" href="../iron-fit-behavior/iron-fit-behavior.html">
 <link rel="import" href="../anypoint-styles/colors.html">
 <link rel="import" href="../anypoint-styles/typography.html">
-<!--
-The `<paper-input-error>` is a container for an error message or list of validation
-rules if the input element uses `validator`s.
-
-### Styling
-
-Custom property | Description | Default
-----------------|-------------|----------
-`--paper-input-error-container` | Mixin applied to the element | `{}`
-`--paper-input-error-border-color` | Border color of the popover | `--anypoint-color-aluminum3`
-`--paper-input-error-left-border` | Color of the right border of the popover | `--anypoint-color-steel4`
-`--anypoint-text-container-invalid-color` | Color of error messages and borders when corresponding form control is invalid | `--anypoint-color-danger`
-`--paper-input-error-message-size` | Font size of the validation message. | `12px`
-
-@demo demo/index.html
-@element paper-input-error
--->
 <dom-module id="paper-input-error">
   <template>
     <style>
      :host {
       display: block;
-      @apply(--paper-input-error);
+      @apply --paper-input-error;
     }
 
     .container {
       padding: 7px;
-      border: 1px var(--paper-input-error-border-color, --anypoint-color-aluminum3) solid;
+      border: 1px var(--paper-input-error-border-color, var(--anypoint-color-aluminum3)) solid;
       position: relative;
       background-color: #fff;
-      @apply(--paper-input-error-container);
+      @apply --paper-input-error-container;
     }
 
     .arrow {
-      border-right: 4px solid var(--paper-input-error-left-border, --anypoint-color-steel4);
+      border-right: 4px solid var(--paper-input-error-left-border, var(--anypoint-color-steel4));
       border-top: 4px solid transparent;
       border-bottom: 4px solid transparent;
       left: -6px;
@@ -54,14 +36,14 @@ Custom property | Description | Default
       position: absolute;
       width: 0;
       z-index: -1;
-      @apply(--paper-input-error-arrow);
+      @apply --paper-input-error-arrow;
     }
 
     .border {
       display: block;
       opacity: inherit;
       position: absolute;
-      background-color: var(--paper-input-error-left-border, --anypoint-color-steel4);
+      background-color: var(--paper-input-error-left-border, var(--anypoint-color-steel4));
       height: calc(100% + 2px);
       width: 2px;
       top: -1px;
@@ -69,11 +51,11 @@ Custom property | Description | Default
     }
 
     .is-invalid .arrow {
-      border-right-color: var(--anypoint-text-container-invalid-color, --anypoint-color-danger);
+      border-right-color: var(--anypoint-text-container-invalid-color, var(--anypoint-color-danger));
     }
 
     .is-invalid .border {
-      background-color: var(--anypoint-text-container-invalid-color, --anypoint-color-danger);
+      background-color: var(--anypoint-text-container-invalid-color, var(--anypoint-color-danger));
     }
 
     ul {
@@ -83,7 +65,7 @@ Custom property | Description | Default
     }
 
     li {
-      @apply(--anypoint-font-body);
+      @apply --anypoint-font-body;
       color: var(--anypoint-color-steel1);
       font-size: var(--paper-input-error-message-size, 12px);
     }
@@ -92,6 +74,7 @@ Custom property | Description | Default
       color: var(--anypoint-color-aluminum4);
       text-decoration: line-through;
     }
+
     </style>
     <div class$="container [[_computeContainerClass(invalid)]]">
       <div class="arrow"></div>
@@ -104,53 +87,71 @@ Custom property | Description | Default
     </div>
   </template>
   <script>
-  Polymer({
-    is: 'paper-input-error',
+  /**
+   * The `<paper-input-error>` is a container for an error message or list of validation
+   * rules if the input element uses `validator`s.
+   *
+   * ### Styling
+   *
+   * Custom property | Description | Default
+   * ----------------|-------------|----------
+   * `--paper-input-error-container` | Mixin applied to the element | `{}`
+   * `--paper-input-error-border-color` | Border color of the popover | `--anypoint-color-aluminum3`
+   * `--paper-input-error-left-border` | Color of the right border of the popover | `--anypoint-color-steel4`
+   * `--anypoint-text-container-invalid-color` | Color of error messages and borders when corresponding form control is invalid | `--anypoint-color-danger`
+   * `--paper-input-error-message-size` | Font size of the validation message. | `12px`
+   *
+   * @customElement
+   * @polymer
+   * @demo demo/index.html
+   * @appliesMixin Polymer.IronOverlayBehavior
+   * @memberof AnypointElements
+   */
+  class PaperInputError extends Polymer.mixinBehaviors([Polymer.IronOverlayBehavior], Polymer.Element) {
+    static get is() { return 'paper-input-error'; }
+    static get properties() {
+      return {
+        /**
+         * An error message to display. This should be used when native validators are used
+         */
+        errorMessage: String,
+        /**
+         * A property bind to `<anypoint-input>`'s `invalid` property.
+         * Should be used for both `errorMessage` and `validationStates`.
+         */
+        invalid: Boolean,
+        /**
+         * A property that should be bind to `<anypoint-input>`'s `validationStates` property.
+         * This property is set by the `Anypoint.AnypointValidatableBehavior`.
+         */
+        validationStates: Array,
+        /**
+         * A property that should be bind to `<anypoint-input>`'s `focused` property. Should be
+         * used when using `validationStates`
+         */
+        focused: Boolean,
+        noCancelOnOutsideClick: {
+          type: Boolean,
+          value: true
+        },
+        /**
+         * A list of messages to display at a time.
+         * @type {Array<String>}
+         */
+        _messages: Array
+      };
+    }
+    static get observers() {
+      return [
+        '_renderMessage(errorMessage, invalid)',
+        '_renderList(invalid, focused, validationStates.*)'
+      ];
+    }
 
-    behaviors: [
-      Polymer.IronFitBehavior,
-      Polymer.IronOverlayBehavior
-    ],
-
-    properties: {
-      /**
-       * An error message to display. This should be used when native validators are used
-       */
-      errorMessage: String,
-      /**
-       * A property bind to `<anypoint-input>`'s `invalid` property.
-       * Should be used for both `errorMessage` and `validationStates`.
-       */
-      invalid: Boolean,
-      /**
-       * A property that should be bind to `<anypoint-input>`'s `validationStates` property.
-       * This property is set by the `Anypoint.AnypointValidatableBehavior`.
-       */
-      validationStates: Array,
-      /**
-       * A property that should be bind to `<anypoint-input>`'s `focused` property. Should be
-       * used when using `validationStates`
-       */
-      focused: Boolean,
-      noCancelOnOutsideClick: {
-        type: Boolean,
-        value: true
-      },
-      /**
-       * A list of messages to display at a time.
-       * @type {Array<String>}
-       */
-      _messages: Array
-    },
-
-    observers: [
-      '_renderMessage(errorMessage, invalid)',
-      '_renderList(invalid, focused, validationStates.*)'
-    ],
     /**
      * Renders an error message based on `errorMessage` property.
      */
-    _renderMessage: function(errorMessage, invalid) {
+    _renderMessage(errorMessage, invalid) {
       if (!invalid || !errorMessage) {
         this.opened = false;
         return;
@@ -160,50 +161,51 @@ Custom property | Description | Default
         valid: false
       }];
       this.opened = true;
-    },
+    }
     /**
      * Renders the list of validation messages based on the `validationStates` property
      */
-    _renderList: function(invalid, focused, record) {
+    _renderList(invalid, focused, record) {
       if ((!focused && !invalid) || !record || !record.base || !record.base.length) {
         this.opened = false;
         return;
       }
       this._messages = record.base;
       this.opened = true;
-    },
+    }
     /**
      * Positions the element right outside the right border of the input.
      * Simplified version of the `Polymer.IronFitBehavior`
      */
-    position: function() {
+    position() {
       this.style.position = 'absolute';
       // Need border-box for margin/padding.
       this.sizingTarget.style.boxSizing = 'border-box';
       this.style.left = '0px';
       this.style.top = '0px';
 
-      var rect = this.getBoundingClientRect();
-      var positionRect = this.__getNormalizedRect(this.positionTarget);
+      const rect = this.getBoundingClientRect();
+      const positionRect = this.__getNormalizedRect(this.positionTarget);
 
-      var width = positionRect.right - positionRect.left;
+      const width = positionRect.right - positionRect.left;
       this.style.left = (width - 1) + 'px';
 
-      var targetCenter = positionRect.height / 2;
-      var top = targetCenter - (rect.height / 2);
+      const targetCenter = positionRect.height / 2;
+      const top = targetCenter - (rect.height / 2);
       this.style.top = (top - 7) + 'px';
       // Additional offset because the input container is not symmetrical, half of container's
       // top padding.
       this.style.width = (rect.width) + 'px';
-    },
+    }
 
-    _computeContainerClass: function(invalid) {
-      var clazz = '';
+    _computeContainerClass(invalid) {
+      let clazz = '';
       if (invalid) {
         clazz += 'is-invalid';
       }
       return clazz;
     }
-  });
+  }
+  window.customElements.define(PaperInputError.is, PaperInputError);
   </script>
 </dom-module>
