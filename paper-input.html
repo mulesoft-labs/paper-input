@@ -218,7 +218,7 @@ class PaperInput extends Polymer.PaperInputBehavior(Polymer.Element) {
   _onIronInputReady() {
     // Only validate when attached if the input already has a value.
     if (!!this.inputElement.bindValue) {
-      this.$.container._handleValueAndAutoValidate(this.inputElement);
+      this.shadowRoot.querySelector('paper-input-container')._handleValueAndAutoValidate(this.inputElement);
     }
   }
 }

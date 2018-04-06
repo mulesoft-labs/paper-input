@@ -95,6 +95,14 @@ All rights reserved.
     function clearInput() {
       document.getElementById('inputWithButton').value = '';
     }
+
+    setTimeout(() => {
+      const input = document.body.querySelectorAll('paper-input')[1];
+      input.addEventListener('focus', (e) => {
+        console.log('Focused: ', e.target);
+      });
+      input.autofocus = true;
+    }, 1000);
   </script>
 </body>
 </html>

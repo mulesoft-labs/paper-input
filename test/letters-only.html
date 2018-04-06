@@ -1,14 +1,12 @@
-<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../polymer/polymer-element.html">
 <link rel="import" href="../../iron-validator-behavior/iron-validator-behavior.html">
-
 <script>
-  Polymer({
-    is: 'letters-only',
-    behaviors: [
-      Polymer.IronValidatorBehavior
-    ],
-    validate: function(value) {
-      return !value || value.match(/^[a-zA-Z]*$/) !== null;
-    }
-  });
+class LettersOnly extends Polymer.IronValidatorMixin(Polymer.Element) {
+  static get is() { return 'letters-only'; }
+
+  validate(value) {
+    return !value || value.match(/^[a-zA-Z]*$/) !== null;
+  }
+}
+window.customElements.define(LettersOnly.is, LettersOnly);
 </script>
