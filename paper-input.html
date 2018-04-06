@@ -10,7 +10,7 @@ All rights reserved.
 <link rel="import" href="../iron-input/iron-input.html">
 <link rel="import" href="paper-input-container.html">
 <link rel="import" href="paper-input-behavior.html">
-<!-- <link rel="import" href="paper-input-error.html"> -->
+<link rel="import" href="paper-input-error.html">
 <dom-module id="paper-input">
   <template>
     <style>
@@ -85,17 +85,6 @@ All rights reserved.
     label {
       pointer-events: none;
     }
-
-    paper-input-error {
-      -webkit-transform-origin: center center;
-      transform-origin: center center;
-      -webkit-transition: all .2s ease-out;
-      transition: all .2s ease-out;
-    }
-
-    :host(:not([focused])) paper-input-error {
-      transform: translate(-2px);
-    }
     </style>
 
     <paper-input-container
@@ -148,7 +137,7 @@ All rights reserved.
 
       <slot name="suffix" slot="suffix"></slot>
 
-      <!-- <template is="dom-if" if="[[hasValidationMessage]]">
+      <template is="dom-if" if="[[hasValidationMessage]]">
         <paper-input-error
           slot="add-on"
           aria-live="assertive"
@@ -157,8 +146,7 @@ All rights reserved.
           focused="[[focused]]"
           validation-states="{{validationStates}}"
           horizontal-align="right"></paper-input-error>
-      </template> -->
-
+      </template>
     </paper-input-container>
   </template>
 </dom-module>

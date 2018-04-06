@@ -11,51 +11,24 @@ All rights reserved.
 <dom-module id="paper-input-error">
   <template>
     <style>
-     :host {
+    :host {
       display: block;
       @apply --paper-input-error;
     }
 
     .container {
-      padding: 7px;
-      border: 1px var(--paper-input-error-border-color, var(--anypoint-color-aluminum3)) solid;
+      padding: 5px;
+      border-left: 2px var(--paper-input-error-border-color, var(--anypoint-color-aluminum3)) solid;
+      border-right: 2px var(--paper-input-error-border-color, var(--anypoint-color-aluminum3)) solid;
+      border-bottom: 1px var(--paper-input-error-border-color, var(--anypoint-color-aluminum3)) solid;
       position: relative;
       background-color: #fff;
       @apply --paper-input-error-container;
     }
 
-    .arrow {
-      border-right: 4px solid var(--paper-input-error-left-border, var(--anypoint-color-steel4));
-      border-top: 4px solid transparent;
-      border-bottom: 4px solid transparent;
-      left: -6px;
-      top: calc(50% - 4px);
-      display: block;
-      height: 0;
-      opacity: inherit;
-      position: absolute;
-      width: 0;
-      z-index: -1;
-      @apply --paper-input-error-arrow;
-    }
-
-    .border {
-      display: block;
-      opacity: inherit;
-      position: absolute;
-      background-color: var(--paper-input-error-left-border, var(--anypoint-color-steel4));
-      height: calc(100% + 2px);
-      width: 2px;
-      top: -1px;
-      left: -2px;
-    }
-
-    .is-invalid .arrow {
+    :host([invalid]) .container {
+      border-left-color: var(--anypoint-text-container-invalid-color, var(--anypoint-color-danger));
       border-right-color: var(--anypoint-text-container-invalid-color, var(--anypoint-color-danger));
-    }
-
-    .is-invalid .border {
-      background-color: var(--anypoint-text-container-invalid-color, var(--anypoint-color-danger));
     }
 
     ul {
@@ -66,7 +39,7 @@ All rights reserved.
 
     li {
       @apply --anypoint-font-body;
-      color: var(--anypoint-color-steel1);
+      color: var(--anypoint-color-steel3);
       font-size: var(--paper-input-error-message-size, 12px);
     }
 
@@ -74,11 +47,8 @@ All rights reserved.
       color: var(--anypoint-color-aluminum4);
       text-decoration: line-through;
     }
-
     </style>
-    <div class$="container [[_computeContainerClass(invalid)]]">
-      <div class="arrow"></div>
-      <div class="border"></div>
+    <div class="container">
       <ul>
         <template is="dom-repeat" items="{{_messages}}">
           <li validated$="[[item.valid]]">[[item.message]]</li>
@@ -107,7 +77,7 @@ All rights reserved.
    * @appliesMixin Polymer.IronOverlayBehavior
    * @memberof AnypointElements
    */
-  class PaperInputError extends Polymer.mixinBehaviors([Polymer.IronOverlayBehavior], Polymer.Element) {
+  class PaperInputError extends Polymer.Element {
     static get is() { return 'paper-input-error'; }
     static get properties() {
       return {
@@ -119,7 +89,10 @@ All rights reserved.
          * A property bind to `<anypoint-input>`'s `invalid` property.
          * Should be used for both `errorMessage` and `validationStates`.
          */
-        invalid: Boolean,
+        invalid: {
+          type: Boolean,
+          reflectToAttribute: true
+        },
         /**
          * A property that should be bind to `<anypoint-input>`'s `validationStates` property.
          * This property is set by the `Anypoint.AnypointValidatableBehavior`.
@@ -172,38 +145,6 @@ All rights reserved.
       }
       this._messages = record.base;
       this.opened = true;
-    }
-    /**
-     * Positions the element right outside the right border of the input.
-     * Simplified version of the `Polymer.IronFitBehavior`
-     */
-    position() {
-      this.style.position = 'absolute';
-      // Need border-box for margin/padding.
-      this.sizingTarget.style.boxSizing = 'border-box';
-      this.style.left = '0px';
-      this.style.top = '0px';
-
-      const rect = this.getBoundingClientRect();
-      const positionRect = this.__getNormalizedRect(this.positionTarget);
-
-      const width = positionRect.right - positionRect.left;
-      this.style.left = (width - 1) + 'px';
-
-      const targetCenter = positionRect.height / 2;
-      const top = targetCenter - (rect.height / 2);
-      this.style.top = (top - 7) + 'px';
-      // Additional offset because the input container is not symmetrical, half of container's
-      // top padding.
-      this.style.width = (rect.width) + 'px';
-    }
-
-    _computeContainerClass(invalid) {
-      let clazz = '';
-      if (invalid) {
-        clazz += 'is-invalid';
-      }
-      return clazz;
     }
   }
   window.customElements.define(PaperInputError.is, PaperInputError);

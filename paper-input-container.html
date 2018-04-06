@@ -92,7 +92,7 @@ All rights reserved.
     }
 
     .borderline.is-invalid .unfocused-border {
-      background-color: var(--paper-input-container-invalid-color, var(--anypoint-color-danger));
+      background-color: var(--paper-input-container-invalid-color, var(--anypoint-color-danger)) !important;
     }
 
     .label-and-input-container {
@@ -100,12 +100,14 @@ All rights reserved.
       @apply --layout-relative;
       width: 100%;
       max-width: 100%;
+      height: inherit;
     }
 
     .input-content {
       @apply --layout-horizontal;
       @apply --layout-center;
       position: relative;
+      height: inherit;
       background-color: var(--anypoint-color-aluminum2);
       -webkit-transition: background-color .2s ease-out;
       transition: background-color .2s ease-out;
