@@ -16,21 +16,20 @@ All rights reserved.
   <style is="custom-style">
     html {
       --paper-input-container-shared-input-style: {
-        position: relative;
+        position: relative; /* to make a stacking context */
         outline: none;
         box-shadow: none;
-        padding: 10px;
+        padding: 0;
+        margin: 0;
         width: 100%;
         max-width: 100%;
         background: transparent;
         border: none;
         color: var(--paper-input-container-input-color, var(--anypoint-color-steel5));
-        background-color: var(--paper-input-container-input-background-color, transparent);
         -webkit-appearance: none;
         text-align: inherit;
         vertical-align: bottom;
         height: 40px;
-        box-sizing: border-box;
         @apply --anypoint-font-body;
       };
     }
@@ -59,65 +58,35 @@ All rights reserved.
       display: none !important;
     }
 
-    .borderline {
-      @apply --layout-horizontal;
-      @apply --layout-self-stretch;
-    }
-
-    .unfocused-border {
-      @apply --layout-flex;
-      @apply --layout-self-stretch;
-      width: 2px;
-      background-color: var(--paper-input-container-border-color, var(--anypoint-color-aluminum4));
-      -webkit-transition: background-color .2s ease-out;
-      transition: background-color .2s ease-out;
-      @apply --paper-input-container-border;
-    }
-
-    :host(:hover) .unfocused-border {
-      background-color: var(--paper-input-container-hovered-border-color, var(--anypoint-color-aluminum5));
-    }
-
-    .borderline.is-highlighted .unfocused-border {
-      background-color: var(--paper-input-container-border-focused-color, var(--anypoint-color-steel2));
-      @apply --paper-input-container-border-focused;
-    }
-
-    .borderline.is-highlighted .unfocused-border.left {
-      transform: translate(-2px);
-    }
-
-    .borderline.is-highlighted .unfocused-border.right {
-      transform: translate(2px);
-    }
-
-    .borderline.is-invalid .unfocused-border {
-      background-color: var(--paper-input-container-invalid-color, var(--anypoint-color-danger)) !important;
-    }
-
-    .label-and-input-container {
-      @apply --layout-flex-auto;
-      @apply --layout-relative;
-      width: 100%;
-      max-width: 100%;
-      height: inherit;
-    }
-
-    .input-content {
+    .input-wrapper {
       @apply --layout-horizontal;
       @apply --layout-center;
       position: relative;
+      border-left: 2px var(--paper-input-container-border-color, var(--anypoint-color-aluminum4)) solid;
+      border-right: 2px var(--paper-input-container-border-color, var(--anypoint-color-aluminum4)) solid;
       height: inherit;
       background-color: var(--anypoint-color-aluminum2);
       -webkit-transition: background-color .2s ease-out;
       transition: background-color .2s ease-out;
     }
 
-    :host(:hover) .input-content {
-      background-color: var(--anypoint-color-aluminum1);
+    .input-content {
+      @apply --layout-flex-auto;
+      @apply --layout-relative;
+      max-width: 100%;
+      height: inherit;
     }
 
-    :host([disabled]) .input-content {
+    :host(:hover) .input-wrapper {
+      background-color: var(--anypoint-color-aluminum1);
+      border-color: var(--paper-input-container-hovered-border-color, var(--anypoint-color-aluminum5));
+    }
+
+    :host([invalid]) .input-wrapper {
+      border-color: var(--paper-input-container-invalid-color, var(--anypoint-color-danger)) !important;
+    }
+
+    :host([disabled]) .input-wrapper {
       background-color: var(--anypoint-color-aluminum2);
     }
 
@@ -125,7 +94,7 @@ All rights reserved.
     .input-content ::slotted(.paper-input-label) {
       position: absolute;
       top: 10px;
-      right: 0;
+      right: 10px;
       left: 10px;
       font: inherit;
       color: var(--paper-input-container-label-color, var(--anypoint-color-steel5));
@@ -138,14 +107,45 @@ All rights reserved.
       z-index: 1;
     }
 
-    .input-content.label-is-highlighted ::slotted(label),
-    .input-content.label-is-highlighted ::slotted(.paper-input-label) {
+    .input-content ::slotted(input),
+    .input-content ::slotted(iron-input),
+    .input-content ::slotted(textarea),
+    .input-content ::slotted(.paper-input-input) {
+      @apply --paper-input-container-shared-input-style;
+      color: var(--paper-input-container-input-color, var(--anypoint-color-steel5));
+      @apply --paper-input-container-input;
+    }
+
+    :host([focuesed]) .input-content ::slotted(input),
+    :host([focuesed]) .input-content ::slotted(iron-input),
+    :host([focuesed]) .input-content ::slotted(textarea),
+    :host([focuesed]) .input-content ::slotted(iron-autogrow-textarea),
+    :host([focuesed]) .input-content ::slotted(.paper-input-input) {
+      color: var(--paper-input-container-input-focus-color, var(--anypoint-color-steel5));
+      background-color: var(--paper-input-container-input-focus-background-color, transparent);
+    }
+
+    :host([invalid]) .input-content ::slotted(input),
+    :host([invalid]) .input-content ::slotted(iron-input),
+    :host([invalid]) .input-content ::slotted(textarea),
+    :host([invalid]) .input-content ::slotted(iron-autogrow-textarea),
+    :host([invalid]) .input-content ::slotted(.paper-input-input) {
+      @apply --paper-input-container-input-invalid;
+    }
+
+    .input-content ::slotted(input::-webkit-outer-spin-button),
+    .input-content ::slotted(input::-webkit-inner-spin-button) {
+      @apply --paper-input-container-input-webkit-spinner;
+    }
+
+    :host([focuesed]) .input-content ::slotted(label),
+    :host([focuesed]) .input-content ::slotted(.paper-input-label) {
       color: var(--paper-input-container-focus-color, var(--anypoint-color-aluminum5));
       @apply --paper-input-container-label-focus;
     }
 
-    .input-content.is-invalid ::slotted(label),
-    .input-content.is-invalid ::slotted(.paper-input-label) {
+    :host([invalid]) .input-content ::slotted(label),
+    :host([invalid]) .input-content ::slotted(.paper-input-label) {
       color: var(--paper-input-container-invalid-color, var(--anypoint-color-danger));
     }
 
@@ -154,35 +154,24 @@ All rights reserved.
       visibility: hidden;
     }
 
-    .input-content ::slotted(input),
-    .input-content ::slotted(iron-input),
-    .input-content ::slotted(textarea),
-    .input-content ::slotted(.paper-input-input) {
-      @apply --paper-input-container-shared-input-style;
-      @apply --paper-input-container-input;
-    }
-
-    .input-content.label-is-highlighted ::slotted(input),
-    .input-content.label-is-highlighted ::slotted(iron-input),
-    .input-content.label-is-highlighted ::slotted(textarea),
-    .input-content.label-is-highlighted ::slotted(.paper-input-input) {
-      color: var(--paper-input-container-input-focus-color, var(--anypoint-color-steel5));
-      background-color: var(--paper-input-container-input-focus-background-color, transparent);
-    }
-
-    .input-content ::slotted(input::-webkit-outer-spin-button),
-    .input-content ::slotted(input::-webkit-inner-spin-button) {
-      @apply --paper-input-container-input-webkit-spinner;
-    }
-
     .prefix ::slotted(*) {
-      margin-left: 5px;
-      @apply --paper-input-field-prefix;
+      display: inline-block;
+      @apply --paper-input-prefix;
       @apply --layout-flex-none;
     }
+
+    .prefix ::slotted(:first-child) {
+      margin-left: 5px;
+    }
+
     .suffix ::slotted(*) {
-      @apply --paper-input-field-suffix;
+      display: inline-block;
+      @apply --paper-input-suffix;
       @apply --layout-flex-none;
+    }
+
+    .suffix ::slotted(:last-child) {
+      margin-right: 5px;
     }
 
     /* Firefox sets a min-width on the input, which can cause layout issues */
@@ -199,34 +188,26 @@ All rights reserved.
       position: relative;
     }
 
-    .add-on-content.is-invalid ::slotted(*) {
+    :host([invalid]) .add-on-content ::slotted(*) {
       color: var(--paper-input-container-invalid-color, var(--anypoint-color-danger));
     }
 
-    .add-on-content.is-highlighted ::slotted(*) {
+    :host([focused]) .add-on-content ::slotted(*) {
       color: var(--paper-input-container-focus-color, var(--anypoint-color-aluminum5));
     }
     </style>
-    <div class$="[[_computeInputContentClass(focused,invalid,_inputHasContent)]]">
-      <div class$="[[_computeBorderClass(focused,invalid)]]">
-        <div class="unfocused-border left">&nbsp;</div>
-      </div>
-
+    <div class="input-wrapper">
       <span class="prefix"><slot name="prefix"></slot></span>
 
-      <div class="label-and-input-container" id="labelAndInputContainer">
+      <div class$="[[_computeInputContentClass(_inputHasContent)]]" id="labelAndInputContainer">
         <slot name="label"></slot>
         <slot name="input"></slot>
       </div>
 
       <span class="suffix"><slot name="suffix"></slot></span>
-
-      <div class$="[[_computeBorderClass(focused,invalid)]]">
-        <div class="unfocused-border right"></div>
-      </div>
     </div>
 
-    <div class$="[[_computeAddOnContentClass(focused,invalid)]]">
+    <div class="add-on-content">
       <slot name="add-on"></slot>
     </div>
   </template>
@@ -291,7 +272,8 @@ All rights reserved.
         invalid: {
           observer: '_invalidChanged',
           type: Boolean,
-          value: false
+          value: false,
+          reflectToAttribute: true
         },
         /**
          * True if the input has focus.
@@ -300,7 +282,8 @@ All rights reserved.
           readOnly: true,
           type: Boolean,
           value: false,
-          notify: true
+          notify: true,
+          reflectToAttribute: true
         },
 
         _addons: {
@@ -481,36 +464,10 @@ All rights reserved.
       }
     }
 
-    _computeInputContentClass(focused, invalid, _inputHasContent) {
+    _computeInputContentClass(_inputHasContent) {
       let cls = 'input-content';
-      if (invalid) {
-        cls += ' is-invalid';
-      } else if (focused) {
-        cls += ' label-is-highlighted';
-      }
       if (_inputHasContent) {
         cls += ' label-is-hidden';
-      }
-      return cls;
-    }
-
-    _computeBorderClass(focused, invalid) {
-      var cls = 'borderline';
-      if (invalid) {
-        cls += ' is-invalid';
-      }
-      if (focused) {
-        cls += ' is-highlighted';
-      }
-      return cls;
-    }
-
-    _computeAddOnContentClass(focused, invalid) {
-      var cls = 'add-on-content';
-      if (invalid) {
-        cls += ' is-invalid';
-      } else if (focused) {
-        cls += ' is-highlighted';
       }
       return cls;
     }

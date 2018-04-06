@@ -14,10 +14,6 @@ All rights reserved.
 <dom-module id="paper-input">
   <template>
     <style>
-     :host {
-      display: block;
-    }
-
     :host {
       display: block;
     }
@@ -39,7 +35,7 @@ All rights reserved.
     it, but in order for this to work correctly, we need to reset some
     of the native input's properties to inherit (from the iron-input) */
     iron-input > input {
-      /* @apply --paper-input-container-shared-input-style; */
+      @apply --paper-input-container-shared-input-style;
       font-family: inherit;
       font-weight: inherit;
       font-size: inherit;
@@ -47,14 +43,14 @@ All rights reserved.
       word-spacing: inherit;
       line-height: inherit;
       text-shadow: inherit;
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      border: none;
-      outline: none;
-      background: inherit;
-      background-color: inherit;
+      color: inherit;
+      cursor: inherit;
+      padding: 0 10px;
+      box-sizing: border-box;
+    }
+
+    input:disabled {
+      @apply --paper-input-container-input-disabled;
     }
 
     input::-webkit-outer-spin-button,
@@ -64,6 +60,10 @@ All rights reserved.
 
     input::-webkit-clear-button {
       @apply --paper-input-container-input-webkit-clear;
+    }
+
+    input::-webkit-calendar-picker-indicator {
+      @apply --paper-input-container-input-webkit-calendar-picker-indicator;
     }
 
     input::-webkit-input-placeholder {
@@ -76,6 +76,14 @@ All rights reserved.
 
     input::-moz-placeholder {
       color: var(--paper-input-container-color, var(--secondary-text-color));
+    }
+
+    input::-ms-clear {
+      @apply --paper-input-container-ms-clear;
+    }
+
+    input::-ms-reveal {
+      @apply --paper-input-container-ms-reveal;
     }
 
     input:-ms-input-placeholder {
