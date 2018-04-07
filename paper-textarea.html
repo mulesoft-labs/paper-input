@@ -62,7 +62,7 @@ All rights reserved.
         autocapitalize$="[[autocapitalize]]"
         rows$="[[rows]]"></textarea>
       <template is="dom-if" if="[[hasValidationMessage]]">
-        <paper-input-error slot="add-on" aria-live="assertive" error-message="[[errorMessage]]" invalid="[[invalid]]" focused="[[focused]]" horizontal-align="right"></paper-input-error>
+        <paper-input-error slot="add-on" aria-live="assertive" invalid="[[invalid]]" focused="[[focused]]" horizontal-align="right">[[errorMessage]]</paper-input-error>
       </template>
     </paper-input-container>
   </template>

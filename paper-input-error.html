@@ -54,6 +54,7 @@ All rights reserved.
           <li validated$="[[item.valid]]">[[item.message]]</li>
         </template>
       </ul>
+      <slot></slot>
     </div>
   </template>
   <script>
@@ -82,12 +83,7 @@ All rights reserved.
     static get properties() {
       return {
         /**
-         * An error message to display. This should be used when native validators are used
-         */
-        errorMessage: String,
-        /**
          * A property bind to `<anypoint-input>`'s `invalid` property.
-         * Should be used for both `errorMessage` and `validationStates`.
          */
         invalid: {
           type: Boolean,
@@ -116,24 +112,8 @@ All rights reserved.
     }
     static get observers() {
       return [
-        '_renderMessage(errorMessage, invalid)',
         '_renderList(invalid, focused, validationStates.*)'
       ];
-    }
-
-    /**
-     * Renders an error message based on `errorMessage` property.
-     */
-    _renderMessage(errorMessage, invalid) {
-      if (!invalid || !errorMessage) {
-        this.opened = false;
-        return;
-      }
-      this._messages = [{
-        message: errorMessage,
-        valid: false
-      }];
-      this.opened = true;
     }
     /**
      * Renders the list of validation messages based on the `validationStates` property

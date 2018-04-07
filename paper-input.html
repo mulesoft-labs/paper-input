@@ -47,6 +47,7 @@ All rights reserved.
       cursor: inherit;
       padding: 0 10px;
       box-sizing: border-box;
+      @apply --paper-input-container-input-input-style;
     }
 
     input:disabled {
@@ -149,11 +150,10 @@ All rights reserved.
         <paper-input-error
           slot="add-on"
           aria-live="assertive"
-          error-message="[[errorMessage]]"
           invalid="[[invalid]]"
           focused="[[focused]]"
           validation-states="{{validationStates}}"
-          horizontal-align="right"></paper-input-error>
+          horizontal-align="right">[[errorMessage]]</paper-input-error>
       </template>
     </paper-input-container>
   </template>
