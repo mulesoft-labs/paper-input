@@ -4,49 +4,43 @@ Copyright 2017 Mulesoft.
 
 All rights reserved.
 -->
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../shadycss/apply-shim.html">
+<link rel="import" href="../polymer/lib/elements/custom-style.html">
+<link rel="import" href="../polymer/lib/utils/case-map.html">
+<link rel="import" href="../polymer/lib/utils/render-status.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../anypoint-styles/typography.html">
 <link rel="import" href="../anypoint-styles/colors.html">
-<!--
-
-The `<paper-input-container>` is a container for a `label` and input text styled to match the
-Anypoint platform styling.
-
-### Styling
-
-`<paper-input-field>` provides the following custom properties and mixins for styling:
-
-Custom property | Description | Default
-----------------|-------------|----------
-`--paper-input-container` | Mixin applied to the input container | `{}`
-`--paper-input-container-disabled` | Mixin applied to the disabled container | `{}`
-`--paper-input-container-border` | Mixin applied to the border element on the left and right hand side of the input | ``
-`--paper-input-container-border-focused` | Mixin applied to the border element on the left and right hand side of the input | ``
-`--paper-input-container-border-color` | Color of the right and left border of the input | `--anypoint-color-aluminum4`
-`--paper-input-container-border-focused-color` | Color of the right and left border of the input when the input is focused | `--anypoint-color-steel2`
-`--paper-input-container-invalid-color,` | Error color | `--anypoint-color-danger`
-`--paper-input-container-label-color` | Color of the label | `--anypoint-color-aluminum5`
-`--paper-input-container-label` | Mixin applied to the label | `{}`
-`--paper-input-container-label-floating` | Mixin applied to the floating label | `{}`
-`--paper-input-container-label-focus` | Mixin applied to the label when focused | `{}`
-`--paper-input-container-focus-color` | Color applied to the label and input when focused | `--anypoint-color-aluminum5`
-`--paper-input-field-prefix` | Mixin applied to any prefix element added to the container | `{}`
-`--paper-input-field-suffix` | Mixin applied to any suffix element added to the container | `{}`
-`--paper-input-container-input` | Mixin applied to the input control | ``
-`--paper-input-container-input-color` | Color of the input control | `--anypoint-color-steel5`
-`--paper-input-container-input-focus-color` | Color of the input control when focused | `--anypoint-color-steel5`
-`--paper-input-container-input-background-colol` | Background color of the input element | `#fff`
-`--paper-input-container-input-focus-background-color` | Background color of the input element when focused | `#fff`
-
-@demo demo/index.html
--->
+<custom-style>
+  <style is="custom-style">
+    html {
+      --paper-input-container-shared-input-style: {
+        position: relative; /* to make a stacking context */
+        outline: none;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        max-width: 100%;
+        background: transparent;
+        border: none;
+        color: var(--paper-input-container-input-color, var(--anypoint-color-steel5));
+        -webkit-appearance: none;
+        text-align: inherit;
+        vertical-align: bottom;
+        height: 40px;
+        @apply --anypoint-font-body;
+      };
+    }
+  </style>
+</custom-style>
 <dom-module id="paper-input-container">
   <template>
     <style>
     :host {
       display: block;
-      padding: 8px 0;
+      padding: 2px 0;
       @apply --paper-input-container;
     }
 
@@ -64,65 +58,46 @@ Custom property | Description | Default
       display: none !important;
     }
 
-    .borderline {
-      @apply --layout-horizontal;
-      @apply --layout-self-stretch;
-    }
-
-    .unfocused-border {
-      @apply --layout-flex;
-      @apply --layout-self-stretch;
-      width: 2px;
-      background-color: var(--paper-input-container-border-color, --anypoint-color-aluminum4);
-      -webkit-transform-origin: center center;
-      transform-origin: center center;
-      -webkit-transition: all .2s ease-out;
-      transition: all .2s ease-out;
-      @apply --paper-input-container-border;
-    }
-
-    .borderline.is-highlighted .unfocused-border {
-      background-color: var(--paper-input-container-border-focused-color, --anypoint-color-steel2);
-      @apply --paper-input-container-border-focused;
-    }
-
-    .borderline.is-highlighted .unfocused-border.left {
-      transform: translate(-2px);
-    }
-
-    .borderline.is-highlighted .unfocused-border.right {
-      transform: translate(2px);
-    }
-
-    .borderline.is-invalid .unfocused-border {
-      background-color: var(--paper-input-container-invalid-color, --anypoint-color-danger);
-    }
-
-    .label-and-input-container {
-      @apply --layout-flex-auto;
-      @apply --layout-relative;
-      width: 100%;
-      max-width: 100%;
-    }
-
-    .input-content {
+    .input-wrapper {
       @apply --layout-horizontal;
       @apply --layout-center;
       position: relative;
+      border-left: 2px var(--paper-input-container-border-color, var(--anypoint-color-aluminum4)) solid;
+      border-right: 2px var(--paper-input-container-border-color, var(--anypoint-color-aluminum4)) solid;
+      height: inherit;
+      background-color: var(--anypoint-color-aluminum2);
+      -webkit-transition: background-color .2s ease-out;
+      transition: background-color .2s ease-out;
     }
 
-    .input-content ::content label,
-    .input-content ::content .paper-input-label {
+    .input-content {
+      @apply --layout-flex-auto;
+      @apply --layout-relative;
+      max-width: 100%;
+      height: inherit;
+    }
+
+    :host(:hover) .input-wrapper {
+      background-color: var(--anypoint-color-aluminum1);
+      border-color: var(--paper-input-container-hovered-border-color, var(--anypoint-color-aluminum5));
+    }
+
+    :host([invalid]) .input-wrapper {
+      border-color: var(--paper-input-container-invalid-color, var(--anypoint-color-danger)) !important;
+    }
+
+    :host([disabled]) .input-wrapper {
+      background-color: var(--anypoint-color-aluminum2);
+    }
+
+    .input-content ::slotted(label),
+    .input-content ::slotted(.paper-input-label) {
       position: absolute;
-      top: 19px;
-      right: 0;
-      left: 15px;
+      top: 12px;
+      right: 10px;
+      left: 10px;
       font: inherit;
-      color: var(--paper-input-container-label-color, --anypoint-color-aluminum5);
-      -webkit-transition: -webkit-transform 0.25s, width 0.25s;
-      transition: transform 0.25s, width 0.25s;
-      -webkit-transform-origin: left top;
-      transform-origin: left top;
+      color: var(--paper-input-container-label-color, var(--anypoint-color-steel5));
       @apply --anypoint-font-common-nowrap;
       @apply --anypoint-font-body;
       @apply --paper-input-container-label;
@@ -132,97 +107,80 @@ Custom property | Description | Default
       z-index: 1;
     }
 
-    .input-content.label-is-floating ::content label,
-    .input-content.label-is-floating ::content .paper-input-label {
-      /* Instead font size it uses scale transformation to animate the label */
-      -webkit-transform: translateY(-40%) scale(0.75);
-      transform: translateY(-70%) scale(0.75);
-      /* translateX(5px) */
-      /* Since we scale to 75/100 of the size, we actually have 100/75 of the
-      original space now available */
-      width: 133%;
-      @apply --paper-input-container-label-floating;
-    }
-
-    :host-context([dir="rtl"]) .input-content.label-is-floating ::content label,
-    :host-context([dir="rtl"]) .input-content.label-is-floating ::content .paper-input-label {
-      width: 100%;
-      -webkit-transform-origin: right top;
-      transform-origin: right top;
-
-    }
-
-    .input-content.label-is-highlighted ::content label,
-    .input-content.label-is-highlighted ::content .paper-input-label {
-      color: var(--paper-input-container-focus-color, --anypoint-color-aluminum5);
-      @apply --paper-input-container-label-focus;
-    }
-
-    .input-content.is-invalid ::content label,
-    .input-content.is-invalid ::content .paper-input-label {
-      color: var(--paper-input-container-invalid-color, --anypoint-color-danger);
-    }
-
-    .input-content.label-is-hidden ::content label,
-    .input-content.label-is-hidden ::content .paper-input-label {
-      visibility: hidden;
-    }
-
-    .input-content ::content input,
-    .input-content ::content textarea,
-    .input-content ::content .paper-input-input {
-      position: relative;
-      outline: none;
-      box-shadow: none;
-      padding: 0 14px;
-      width: 100%;
-      max-width: 100%;
-      background: transparent;
-      border: none;
-      color: var(--paper-input-container-input-color, --anypoint-color-steel5);
-      background-color: var(--paper-input-container-input-background-color, #fff);
-      -webkit-appearance: none;
-      text-align: inherit;
-      vertical-align: bottom;
-      height: 45px;
-      padding-top: 10px;
-      box-sizing: border-box;
-      @apply --anypoint-font-body;
+    .input-content ::slotted(input),
+    .input-content ::slotted(iron-input),
+    .input-content ::slotted(textarea),
+    .input-content ::slotted(.paper-input-input) {
+      @apply --paper-input-container-shared-input-style;
+      color: var(--paper-input-container-input-color, var(--anypoint-color-steel5));
       @apply --paper-input-container-input;
     }
 
-    .input-content ::content textarea {
-      padding-top: 16px;
+    :host([focuesed]) .input-content ::slotted(input),
+    :host([focuesed]) .input-content ::slotted(iron-input),
+    :host([focuesed]) .input-content ::slotted(textarea),
+    :host([focuesed]) .input-content ::slotted(iron-autogrow-textarea),
+    :host([focuesed]) .input-content ::slotted(.paper-input-input) {
+      color: var(--paper-input-container-input-focus-color, var(--anypoint-color-steel5));
+      background-color: var(--paper-input-container-input-focus-background-color, transparent);
     }
 
-    .input-content.label-is-highlighted ::content input,
-    .input-content.label-is-highlighted ::content textarea,
-    .input-content.label-is-highlighted ::content .paper-input-input {
-      color: var(--paper-input-container-input-focus-color, --anypoint-color-steel5);
-      background-color: var(--paper-input-container-input-focus-background-color, #fff);
+    :host([invalid]) .input-content ::slotted(input),
+    :host([invalid]) .input-content ::slotted(iron-input),
+    :host([invalid]) .input-content ::slotted(textarea),
+    :host([invalid]) .input-content ::slotted(iron-autogrow-textarea),
+    :host([invalid]) .input-content ::slotted(.paper-input-input) {
+      @apply --paper-input-container-input-invalid;
     }
 
-    .input-content ::content input::-webkit-outer-spin-button,
-    .input-content ::content input::-webkit-inner-spin-button {
+    .input-content ::slotted(input::-webkit-outer-spin-button),
+    .input-content ::slotted(input::-webkit-inner-spin-button) {
       @apply --paper-input-container-input-webkit-spinner;
     }
 
-    ::content [prefix] {
-      margin-left: 5px;
-      @apply --paper-input-field-prefix;
+    :host([focuesed]) .input-content ::slotted(label),
+    :host([focuesed]) .input-content ::slotted(.paper-input-label) {
+      color: var(--paper-input-container-focus-color, var(--anypoint-color-aluminum5));
+      @apply --paper-input-container-label-focus;
+    }
+
+    :host([invalid]) .input-content ::slotted(label),
+    :host([invalid]) .input-content ::slotted(.paper-input-label) {
+      color: var(--paper-input-container-invalid-color, var(--anypoint-color-danger));
+    }
+
+    .input-content.label-is-hidden ::slotted(label),
+    .input-content.label-is-hidden ::slotted(.paper-input-label) {
+      visibility: hidden;
+    }
+
+    .prefix ::slotted(*) {
+      display: inline-block;
+      @apply --paper-input-prefix;
       @apply --layout-flex-none;
     }
-    ::content [suffix] {
-      @apply --paper-input-field-suffix;
+
+    .prefix ::slotted(:first-child) {
+      margin-left: 5px;
+    }
+
+    .suffix ::slotted(*) {
+      display: inline-block;
+      @apply --paper-input-suffix;
       @apply --layout-flex-none;
+    }
+
+    .suffix ::slotted(:last-child) {
+      margin-right: 5px;
     }
 
     /* Firefox sets a min-width on the input, which can cause layout issues */
-    .input-content ::content input {
+    .input-content ::slotted(input),
+    .input-content ::slotted(iron-input) {
       min-width: 0;
     }
 
-    .input-content ::content textarea {
+    .input-content ::slotted(textarea) {
       resize: none;
     }
 
@@ -230,221 +188,253 @@ Custom property | Description | Default
       position: relative;
     }
 
-    .add-on-content.is-invalid ::content * {
-      color: var(--paper-input-container-invalid-color, --anypoint-color-danger);
+    :host([invalid]) .add-on-content ::slotted(*) {
+      color: var(--paper-input-container-invalid-color, var(--anypoint-color-danger));
     }
 
-    .add-on-content.is-highlighted ::content * {
-      color: var(--paper-input-container-focus-color, --anypoint-color-aluminum5);
+    :host([focused]) .add-on-content ::slotted(*) {
+      color: var(--paper-input-container-focus-color, var(--anypoint-color-aluminum5));
     }
     </style>
-    <div class$="[[_computeInputContentClass(noLabelFloat,alwaysFloatLabel,focused,invalid,_inputHasContent)]]">
-      <div class$="[[_computeBorderClass(focused,invalid)]]">
-        <div class="unfocused-border left">&nbsp;</div>
+    <div class="input-wrapper">
+      <span class="prefix"><slot name="prefix"></slot></span>
+
+      <div class$="[[_computeInputContentClass(_inputHasContent, placeholder)]]" id="labelAndInputContainer">
+        <slot name="label"></slot>
+        <slot name="input"></slot>
       </div>
 
-      <content select="[prefix]" id="prefix"></content>
-
-      <div class="label-and-input-container" id="labelAndInputContainer">
-        <content select=":not([add-on]):not([prefix]):not([suffix])"></content>
-      </div>
-
-      <content select="[suffix]"></content>
-
-      <div class$="[[_computeBorderClass(focused,invalid)]]">
-        <div class="unfocused-border right"></div>
-      </div>
+      <span class="suffix"><slot name="suffix"></slot></span>
     </div>
 
-    <div class$="[[_computeAddOnContentClass(focused,invalid)]]">
-      <content id="addOnContent" select="[add-on]"></content>
+    <div class="add-on-content">
+      <slot name="add-on"></slot>
     </div>
   </template>
   <script>
-  Polymer({
-    is: 'paper-input-container',
+  /**
+   * The `<paper-input-container>` is a container for a `label` and input text styled to match the
+   * Anypoint platform styling.
+   *
+   * ### Styling
+   *
+   * `<paper-input-field>` provides the following custom properties and mixins for styling:
+   *
+   * Custom property | Description | Default
+   * ----------------|-------------|----------
+   * `--paper-input-container` | Mixin applied to the input container | `{}`
+   * `--paper-input-container-disabled` | Mixin applied to the disabled container | `{}`
+   * `--paper-input-container-border` | Mixin applied to the border element on the left and right hand side of the input | ``
+   * `--paper-input-container-border-focused` | Mixin applied to the border element on the left and right hand side of the input | ``
+   * `--paper-input-container-border-color` | Color of the right and left border of the input | `--anypoint-color-aluminum4`
+   * `--paper-input-container-border-focused-color` | Color of the right and left border of the input when the input is focused | `--anypoint-color-steel2`
+   * `--paper-input-container-invalid-color,` | Error color | `--anypoint-color-danger`
+   * `--paper-input-container-label-color` | Color of the label | `--anypoint-color-aluminum5`
+   * `--paper-input-container-label` | Mixin applied to the label | `{}`
+   * `--paper-input-container-label-focus` | Mixin applied to the label when focused | `{}`
+   * `--paper-input-container-focus-color` | Color applied to the label and input when focused | `--anypoint-color-aluminum5`
+   * `--paper-input-field-prefix` | Mixin applied to any prefix element added to the container | `{}`
+   * `--paper-input-field-suffix` | Mixin applied to any suffix element added to the container | `{}`
+   * `--paper-input-container-input` | Mixin applied to the input control | ``
+   * `--paper-input-container-input-color` | Color of the input control | `--anypoint-color-steel5`
+   * `--paper-input-container-input-focus-color` | Color of the input control when focused | `--anypoint-color-steel5`
+   * `--paper-input-container-input-background-colol` | Background color of the input element | `#fff`
+   * `--paper-input-container-input-focus-background-color` | Background color of the input element when focused | `#fff`
+   *
+   * @customElement
+   * @polymer
+   * @demo demo/index.html
+   * memberof AnypointElements
+   */
+  class PaperInputContainer extends Polymer.Element {
+    static get is() { return 'paper-input-container'; }
+    static get properties() {
+      return {
+        /**
+         * The attribute to listen for value changes on.
+         */
+        attrForValue: {
+          type: String,
+          value: 'bind-value'
+        },
+        /**
+         * Set to true to auto-validate the input value when it changes.
+         */
+        autoValidate: {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * True if the input is invalid. This property is set automatically when the input value
+         * changes if auto-validating, or when the `iron-input-validate` event is heard from a
+         * child.
+         */
+        invalid: {
+          observer: '_invalidChanged',
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
+        /**
+         * True if the input has focus.
+         */
+        focused: {
+          readOnly: true,
+          type: Boolean,
+          value: false,
+          notify: true,
+          reflectToAttribute: true
+        },
 
-    properties: {
-      /**
-       * Set to true to disable the floating label. The label disappears when the input value is
-       * not null.
-       */
-      noLabelFloat: {
-        type: Boolean,
-        value: false
-      },
-      /**
-       * Set to true to always float the floating label.
-       */
-      alwaysFloatLabel: {
-        type: Boolean,
-        value: false
-      },
-      /**
-       * The attribute to listen for value changes on.
-       */
-      attrForValue: {
-        type: String,
-        value: 'bind-value'
-      },
-      /**
-       * Set to true to auto-validate the input value when it changes.
-       */
-      autoValidate: {
-        type: Boolean,
-        value: false
-      },
-      /**
-       * True if the input is invalid. This property is set automatically when the input value
-       * changes if auto-validating, or when the `iron-input-validate` event is heard from a
-       * child.
-       */
-      invalid: {
-        observer: '_invalidChanged',
-        type: Boolean,
-        value: false
-      },
-      /**
-       * True if the input has focus.
-       */
-      focused: {
-        readOnly: true,
-        type: Boolean,
-        value: false,
-        notify: true
-      },
-      _addons: {
-        type: Array
-        // do not set a default value here intentionally - it will be initialized lazily when a
-        // distributed child is attached, which may occur before configuration for this element
-        // in polyfill.
-      },
-      _inputHasContent: {
-        type: Boolean,
-        value: false
-      },
-      _inputSelector: {
-        type: String,
-        value: 'input,textarea,.paper-input-input,.iron-input'
-      },
-      _boundOnFocus: {
-        type: Function,
-        value: function() {
-          return this._onFocus.bind(this);
-        }
-      },
-      _boundOnBlur: {
-        type: Function,
-        value: function() {
-          return this._onBlur.bind(this);
-        }
-      },
-      _boundOnInput: {
-        type: Function,
-        value: function() {
-          return this._onInput.bind(this);
-        }
-      },
-      _boundValueChanged: {
-        type: Function,
-        value: function() {
-          return this._onValueChanged.bind(this);
-        }
-      }
-    },
+        _addons: {
+          type: Array
+          // do not set a default value here intentionally - it will be initialized lazily when a
+          // distributed child is attached, which may occur before configuration for this element
+          // in polyfill.
+        },
 
-    listeners: {
-      'addon-attached': '_onAddonAttached',
-      'iron-input-validate': '_onIronInputValidate'
-    },
+        _inputHasContent: {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * A placeholder string in addition to the label. If this is set, the label will always float.
+         */
+        placeholder: {
+          type: String
+        }
+      };
+    }
 
     get _valueChangedEvent() {
       return this.attrForValue + '-changed';
-    },
+    }
 
     get _propertyForValue() {
       return Polymer.CaseMap.dashToCamelCase(this.attrForValue);
-    },
+    }
 
     get _inputElement() {
-      return Polymer.dom(this).querySelector(this._inputSelector);
-    },
+      const nodes = this.shadowRoot.querySelector('slot[name="input"]').assignedNodes();
+      for (let i = 0, len = nodes.length; i < len; i++) {
+        if (nodes[i].nodeType === Node.ELEMENT_NODE) {
+          return nodes[i];
+        }
+      }
+    }
 
     get _inputElementValue() {
-      return this._inputElement[this._propertyForValue] || this._inputElement.value;
-    },
+      const input = this._inputElement;
+      if (!input) {
+        return;
+      }
+      return input[this._propertyForValue] || input.value;
+    }
 
-    ready: function() {
+    constructor() {
+      super();
+      this._onValueChanged = this._onValueChanged.bind(this);
+      this._onInput = this._onInput.bind(this);
+      this._onBlur = this._onBlur.bind(this);
+      this._onFocus = this._onFocus.bind(this);
+      this._onAddonAttached = this._onAddonAttached.bind(this);
+      this._onIronInputValidate = this._onIronInputValidate.bind(this);
+      this._typesThatHaveText = ['date', 'datetime', 'datetime-local', 'month',
+          'time', 'week', 'file'];
+    }
+
+    connectedCallback() {
+      super.connectedCallback();
+      this.addEventListener('addon-attached', this._onAddonAttached);
+      this.addEventListener('iron-input-validate', this._onIronInputValidate);
+      this.addEventListener('focus', this._onFocus);
+      this.addEventListener('blur', this._onBlur);
+
+      Polymer.RenderStatus.afterNextRender(this, () => {
+        const input = this._inputElement;
+        if (this.attrForValue) {
+          input.addEventListener(this._valueChangedEvent, this._onValueChanged);
+        } else {
+          this.addEventListener('input', this._onInput);
+        }
+        // Only validate when attached if the input already has a value.
+        if (this._inputElementValue !== '') {
+          this._handleValueAndAutoValidate(input);
+        } else {
+          this._handleValue(this._inputElement);
+        }
+      });
+    }
+
+    disconnectedCallback() {
+      super.disconnectedCallback();
+      this.removeEventListener('addon-attached', this._onAddonAttached);
+      this.removeEventListener('iron-input-validate', this._onIronInputValidate);
+      this.removeEventListener('focus', this._onFocus);
+      this.removeEventListener('blur', this._onBlur);
+    }
+
+    ready() {
+      super.ready();
       if (!this._addons) {
         this._addons = [];
       }
-      this.addEventListener('focus', this._boundOnFocus, true);
-      this.addEventListener('blur', this._boundOnBlur, true);
-    },
+    }
 
-    attached: function() {
-      if (this.attrForValue) {
-        this._inputElement.addEventListener(this._valueChangedEvent, this._boundValueChanged);
-      } else {
-        this.addEventListener('input', this._onInput);
-      }
-      // Only validate when attached if the input already has a value.
-      if (this._inputElementValue !== '') {
-        this._handleValueAndAutoValidate(this._inputElement);
-      } else {
-        this._handleValue(this._inputElement);
-      }
-    },
-
-    _onAddonAttached: function(event) {
+    _onAddonAttached(event) {
       if (!this._addons) {
         this._addons = [];
       }
-      var target = event.target;
+      const target = event.target;
       if (this._addons.indexOf(target) === -1) {
         this._addons.push(target);
         if (this.isAttached) {
           this._handleValue(this._inputElement);
         }
       }
-    },
+    }
 
-    _onFocus: function() {
+    _onFocus() {
       this._setFocused(true);
-    },
+    }
 
-    _onBlur: function() {
+    _onBlur() {
       this._setFocused(false);
       this._handleValueAndAutoValidate(this._inputElement);
-    },
+    }
 
-    _onInput: function(event) {
+    _onInput(event) {
       this._handleValueAndAutoValidate(event.target);
-    },
+    }
 
-    _onValueChanged: function(event) {
+    _onValueChanged(event) {
       this._handleValueAndAutoValidate(event.target);
-    },
+    }
 
-    _handleValue: function(inputElement) {
-      var value = this._inputElementValue;
+    _handleValue(inputElement) {
+      const value = this._inputElementValue;
       // type="number" hack needed because this.value is empty until it's valid
       if (value || value === 0 || (inputElement.type === 'number' &&
           !inputElement.checkValidity())) {
         this._inputHasContent = true;
       } else {
-        this._inputHasContent = false;
+        const type = (inputElement._inputElement && inputElement._inputElement.type);
+        if (this._typesThatHaveText.indexOf(type) !== -1) {
+          this._inputHasContent = true;
+        } else {
+          this._inputHasContent = false;
+        }
       }
       this.updateAddons({
         inputElement: inputElement,
         value: value,
         invalid: this.invalid
       });
-    },
+    }
 
-    _handleValueAndAutoValidate: function(inputElement) {
+    _handleValueAndAutoValidate(inputElement) {
       if (this.autoValidate) {
-        var valid;
+        let valid;
         if (inputElement.validate) {
           valid = inputElement.validate(this._inputElementValue);
         } else {
@@ -454,82 +444,40 @@ Custom property | Description | Default
       }
       // Call this last to notify the add-ons.
       this._handleValue(inputElement);
-    },
+    }
 
-    _onIronInputValidate: function() {
+    _onIronInputValidate() {
       this.invalid = this._inputElement.invalid;
-    },
+    }
 
-    _invalidChanged: function() {
+    _invalidChanged() {
       if (this._addons) {
         this.updateAddons({
           invalid: this.invalid
         });
       }
-    },
+    }
 
     /**
      * Call this to update the state of add-ons.
      * @param {Object} state Add-on state.
      */
-    updateAddons: function(state) {
-      var addon;
-      for (var index = 0, len = this._addons.length; index < len; index++) {
+    updateAddons(state) {
+      let addon;
+      for (let index = 0, len = this._addons.length; index < len; index++) {
         addon = this._addons[index];
         addon.update(state);
       }
-    },
+    }
 
-    _computeInputContentClass: function(noLabelFloat, alwaysFloatLabel, focused, invalid,
-      _inputHasContent) {
-      var cls = 'input-content';
-      if (!noLabelFloat) {
-        var label = this.querySelector('label');
-        if (alwaysFloatLabel || _inputHasContent || focused) {
-          cls += ' label-is-floating';
-          // If the label is floating, ignore any offsets that may have been
-          // applied from a prefix element.
-          // this.$.labelAndInputContainer.style.position = 'static';
-          this.$.labelAndInputContainer.style.position = 'relative';
-          if (invalid) {
-            cls += ' is-invalid';
-          } else if (focused) {
-            cls += ' label-is-highlighted';
-          }
-        } else {
-          // When the label is not floating, it should overlap the input element.
-          if (label) {
-            this.$.labelAndInputContainer.style.position = 'relative';
-          }
-        }
-      } else {
-        if (_inputHasContent) {
-          cls += ' label-is-hidden';
-        }
-      }
-      return cls;
-    },
-
-    _computeBorderClass: function(focused, invalid) {
-      var cls = 'borderline';
-      if (invalid) {
-        cls += ' is-invalid';
-      }
-      if (focused) {
-        cls += ' is-highlighted';
-      }
-      return cls;
-    },
-
-    _computeAddOnContentClass: function(focused, invalid) {
-      var cls = 'add-on-content';
-      if (invalid) {
-        cls += ' is-invalid';
-      } else if (focused) {
-        cls += ' is-highlighted';
+    _computeInputContentClass(_inputHasContent, placeholder) {
+      let cls = 'input-content';
+      if (_inputHasContent || placeholder) {
+        cls += ' label-is-hidden';
       }
       return cls;
     }
-  });
+  }
+  window.customElements.define(PaperInputContainer.is, PaperInputContainer);
   </script>
 </dom-module>

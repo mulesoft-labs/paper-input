@@ -3,17 +3,13 @@
 Copyright 2017 Mulesoft.
 All rights reserved.
 -->
-
-<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../polymer/polymer-element.html">
 <link rel="import" href="../../iron-validator-behavior/iron-validator-behavior.html">
-
 <script>
-  Polymer({
-    is: 'minimum-maximum-length',
-    behaviors: [
-      Polymer.IronValidatorBehavior
-    ],
-    properties: {
+class MinimumMaximumLength extends Polymer.IronValidatorMixin(Polymer.Element) {
+  static get is() { return 'minimum-maximum-length'; }
+  static get properties() {
+    return {
       // Error message to display
       message: {
         type: String,
@@ -29,15 +25,17 @@ All rights reserved.
         type: Number,
         value: 12
       }
-    },
-    validate: function(value) {
-      if (!value) {
-        return false;
-      }
-      if (value.length < this.min || value.length > this.max) {
-        return false;
-      }
-      return true;
+    };
+  }
+  validate(value) {
+    if (!value) {
+      return false;
     }
-  });
+    if (value.length < this.min || value.length > this.max) {
+      return false;
+    }
+    return true;
+  }
+}
+window.customElements.define(MinimumMaximumLength.is, MinimumMaximumLength);
 </script>

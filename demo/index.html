@@ -10,30 +10,33 @@ All rights reserved.
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
-
   <title>paper-input demo</title>
-
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-
+  <link rel="import" href="../../shadycss/apply-shim.html">
+  <link rel="import" href="../../polymer/lib/elements/custom-style.html">
   <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-
+  <link rel="import" href="../../iron-icon/iron-icon.html">
+  <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+  <link rel="import" href="../../iron-icon/iron-icon.html">
+  <link rel="import" href="../../iron-icons/iron-icons.html">
   <link rel="import" href="../paper-input.html">
   <link rel="import" href="../paper-textarea.html">
   <link rel="import" href="minimum-maximum-length.html">
   <link rel="import" href="number-required.html">
   <link rel="import" href="uppercase-required.html">
-  <style is="custom-style" include="demo-pages-shared-styles">
-    html {
-      font-size: 65%;
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+    body {
+      @apply --anypoint-font-body;
     }
-    .vertical-section-container {
-      max-width: 600px;
-    }
-
-  </style>
+    </style>
+  </custom-style>
 </head>
 <body unresolved>
+  <minimum-maximum-length></minimum-maximum-length>
+  <number-required></number-required>
+  <uppercase-required></uppercase-required>
   <div class="vertical-section-container centered">
     <h3>Inputs can have different types, and be disabled</h3>
     <demo-snippet>
@@ -41,19 +44,13 @@ All rights reserved.
         <paper-input label="text input"></paper-input>
         <paper-input label="password input" type="password"></paper-input>
         <paper-input label="disabled input" disabled></paper-input>
-        <paper-input label="Label floats automatically for some inputs" type="date"></paper-input>
+        <paper-input label="Label removed for some inputs" type="date"></paper-input>
+        <paper-input label="text input" placeholder="Placeholder has higher priority than label"></paper-input>
         <label>Text area</label>
-        <paper-textarea label="textarea input"></paper-textarea>
-      </template>
-    </demo-snippet>
-
-    <h3>The label can have different floating states</h3>
-    <demo-snippet>
-      <template>
-        <paper-input label="this label floats after typing"></paper-input>
-        <paper-input label="this label is always floating" always-float-label></paper-input>
-        <paper-input label="this label never floats" no-label-float></paper-input>
-        <paper-input label="this label is always floating" always-float-label placeholder="placeholder text"></paper-input>
+        <paper-textarea class="tarea" label="textarea input"></paper-textarea>
+        <custom-style>
+          <style>.tarea{ height: 120px;}</style>
+        </custom-style>
       </template>
     </demo-snippet>
 
@@ -72,13 +69,13 @@ All rights reserved.
     <demo-snippet class="horizontal">
       <template>
         <paper-input label="total" type="number">
-          <div prefix>$</div>
+          <div slot="prefix">$</div>
         </paper-input>
+
         <paper-input label="username" id="inputWithButton">
-          <iron-icon icon="mail" prefix></iron-icon>
-          <div suffix>@email.com</div>
-          <paper-icon-button suffix onclick="clearInput()"
-              icon="clear" alt="clear" title="clear">
+          <iron-icon icon="mail" slot="prefix"></iron-icon>
+          <div slot="suffix">@email.com</div>
+          <paper-icon-button slot="suffix" onclick="clearInput()" icon="clear" alt="clear" title="clear">
           </paper-icon-button>
         </paper-input>
       </template>
@@ -87,9 +84,6 @@ All rights reserved.
     <h3>Inputs can use custom validators</h3>
     <demo-snippet>
       <template>
-        <minimum-maximum-length></minimum-maximum-length>
-        <number-required></number-required>
-        <uppercase-required></uppercase-required>
         <paper-input label="Many validators" auto-validate validator="minimum-maximum-length number-required uppercase-required"></paper-input>
       </template>
     </demo-snippet>
@@ -102,6 +96,14 @@ All rights reserved.
     function clearInput() {
       document.getElementById('inputWithButton').value = '';
     }
+
+    setTimeout(() => {
+      const input = document.body.querySelectorAll('paper-input')[1];
+      input.addEventListener('focus', (e) => {
+        console.log('Focused: ', e.target);
+      });
+      input.autofocus = true;
+    }, 1000);
   </script>
 </body>
 </html>
