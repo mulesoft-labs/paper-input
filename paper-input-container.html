@@ -90,14 +90,10 @@ All rights reserved.
       background-color: var(--anypoint-color-aluminum2);
     }
 
-    .input-content ::slotted(label),
-    .input-content ::slotted(.paper-input-label) {
-      position: absolute;
-      top: 12px;
-      right: 10px;
-      left: 10px;
+    :host ::slotted(label),
+    :host ::slotted(.paper-input-label) {
       font: inherit;
-      color: var(--paper-input-container-label-color, var(--anypoint-color-steel5));
+      color: var(--paper-input-container-label-color, var(--anypoint-color-steel2));
       @apply --anypoint-font-common-nowrap;
       @apply --anypoint-font-body;
       @apply --paper-input-container-label;
@@ -105,6 +101,9 @@ All rights reserved.
       font-style: normal;
       font-weight: 400;
       z-index: 1;
+      margin-bottom: 10px;
+      margin-top: 5px;
+      display: block;
     }
 
     .input-content ::slotted(input),
@@ -138,20 +137,15 @@ All rights reserved.
       @apply --paper-input-container-input-webkit-spinner;
     }
 
-    :host([focuesed]) .input-content ::slotted(label),
-    :host([focuesed]) .input-content ::slotted(.paper-input-label) {
+    :host([focuesed]) ::slotted(label),
+    :host([focuesed]) ::slotted(.paper-input-label) {
       color: var(--paper-input-container-focus-color, var(--anypoint-color-aluminum5));
       @apply --paper-input-container-label-focus;
     }
 
-    :host([invalid]) .input-content ::slotted(label),
-    :host([invalid]) .input-content ::slotted(.paper-input-label) {
+    :host([invalid]) ::slotted(label),
+    :host([invalid]) ::slotted(.paper-input-label) {
       color: var(--paper-input-container-invalid-color, var(--anypoint-color-danger));
-    }
-
-    .input-content.label-is-hidden ::slotted(label),
-    .input-content.label-is-hidden ::slotted(.paper-input-label) {
-      visibility: hidden;
     }
 
     .prefix ::slotted(*) {
@@ -196,11 +190,10 @@ All rights reserved.
       color: var(--paper-input-container-focus-color, var(--anypoint-color-aluminum5));
     }
     </style>
+    <slot name="label"></slot>
     <div class="input-wrapper">
       <span class="prefix"><slot name="prefix"></slot></span>
-
-      <div class$="[[_computeInputContentClass(_inputHasContent, placeholder)]]" id="labelAndInputContainer">
-        <slot name="label"></slot>
+      <div class="input-content" id="labelAndInputContainer">
         <slot name="input"></slot>
       </div>
 
@@ -247,7 +240,9 @@ All rights reserved.
    * memberof AnypointElements
    */
   class PaperInputContainer extends Polymer.Element {
-    static get is() { return 'paper-input-container'; }
+    static get is() {
+      return 'paper-input-container';
+    }
     static get properties() {
       return {
         /**
@@ -291,11 +286,6 @@ All rights reserved.
           // do not set a default value here intentionally - it will be initialized lazily when a
           // distributed child is attached, which may occur before configuration for this element
           // in polyfill.
-        },
-
-        _inputHasContent: {
-          type: Boolean,
-          value: false
         },
         /**
          * A placeholder string in addition to the label. If this is set, the label will always float.
@@ -413,18 +403,6 @@ All rights reserved.
 
     _handleValue(inputElement) {
       const value = this._inputElementValue;
-      // type="number" hack needed because this.value is empty until it's valid
-      if (value || value === 0 || (inputElement.type === 'number' &&
-          !inputElement.checkValidity())) {
-        this._inputHasContent = true;
-      } else {
-        const type = (inputElement._inputElement && inputElement._inputElement.type);
-        if (this._typesThatHaveText.indexOf(type) !== -1) {
-          this._inputHasContent = true;
-        } else {
-          this._inputHasContent = false;
-        }
-      }
       this.updateAddons({
         inputElement: inputElement,
         value: value,
@@ -468,14 +446,6 @@ All rights reserved.
         addon = this._addons[index];
         addon.update(state);
       }
-    }
-
-    _computeInputContentClass(_inputHasContent, placeholder) {
-      let cls = 'input-content';
-      if (_inputHasContent || placeholder) {
-        cls += ' label-is-hidden';
-      }
-      return cls;
     }
   }
   window.customElements.define(PaperInputContainer.is, PaperInputContainer);
