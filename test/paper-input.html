@@ -127,14 +127,6 @@ All rights reserved.
       assert.equal(ironInput.selectionStart, 2, 'selectionStart is preserved');
       assert.equal(ironInput.selectionEnd, 2, 'selectionEnd is preserved');
     });
-
-    test('setting autofocus to true implictly acquires focus', function(done) {
-      const input = fixture('basic');
-      input.addEventListener('focus', () => {
-        done();
-      });
-      input.autofocus = true;
-    });
   });
 
   suite('validation', () => {
@@ -145,7 +137,6 @@ All rights reserved.
         assert.ok(error, 'paper-input-error exists');
         done();
       });
-
     });
 
     test('invalid attribute updated after calling validate()', (done) => {
